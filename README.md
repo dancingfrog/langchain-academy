@@ -59,6 +59,50 @@ PS> $env:API_ENV_VAR = "your-api-key-here"
 * If you don't have an OpenAI API key, you can sign up [here](https://openai.com/index/openai-api/).
 *  Set `OPENAI_API_KEY` in your environment 
 
+### OpenRouter API (alternative to OpenAI direct)
+
+The notebooks also support [OpenRouter](https://openrouter.ai/) as an alternative provider, using the `openai/gpt-oss-120b` model via `ChatOpenAI` with a custom `base_url`. OpenRouter routes requests across multiple upstream inference providers.
+
+* Sign up at [openrouter.ai](https://openrouter.ai/) and obtain an API key.
+* Set `OPENROUTER_API_KEY` in your environment.
+* Adding $10+ in credits unlocks 1,000 free-tier requests/day (vs 50 without credits).
+
+#### Available providers for `openai/gpt-oss-120b`
+
+The following table of model providers is ordered by a rough priority ranking:
+
+1. **Top group (rows 1-7)** - Providers with known output speed, sorted descending — Cerebras (3,044), Together.ai (920), Fireworks (789), SambaNova (743), Lightning AI (734), Baseten (650), Clarifai (544)
+2. **Middle group (rows 8-11)** - Providers with TTFT or pricing data but no output speed, sorted by TTFT then price ascending — Groq (0.14s), DeepInfra (0.21s, $0.08), Novita ($0.10), Google Vertex ($0.16)
+3. **Bottom group (rows 12-20)** - Remaining providers with no benchmark data, loosely grouped by category — Enterprise (Amazon, Azure, Databricks, Snowflake), Budget (Nebius, Hyperbolic, Parasail), Niche (Cloudflare, Scaleway, Eigen AI)
+
+| Provider | Output speed (tok/s) | TTFT (s) | Price ($/M tokens) | Notable for |
+|---|---|---|---|---|
+| Cerebras | ~3,044 | — | $0.25 in / $0.69 out | Fastest inference (custom silicon) |
+| Together.ai | ~920 | — | — | High throughput, popular |
+| Fireworks | ~789 | — | — | High throughput, low latency |
+| SambaNova | ~743 | — | — | High throughput (custom silicon) |
+| Lightning AI | ~734 | 0.18 | $0.17 blended | Fast + low latency + cheap |
+| Baseten | ~650 | 0.09 | — | Lowest latency (TTFT) |
+| Clarifai | ~544 | 0.23 | $0.16 blended | Fast on GPU, cost-effective |
+| Groq | — | 0.14 | — | Low latency (custom silicon) |
+| DeepInfra | — | 0.21 | $0.08 blended | Cheapest |
+| Novita | — | — | $0.10 blended | Budget |
+| Google Vertex | — | — | $0.16 blended | Enterprise |
+| Amazon Bedrock | — | — | — | Enterprise |
+| Microsoft Azure | — | — | — | Enterprise |
+| Databricks | — | — | — | Enterprise |
+| Snowflake | — | — | — | Enterprise |
+| Nebius | — | — | — | Budget-friendly |
+| Hyperbolic | — | — | — | Budget |
+| Parasail | — | — | — | Budget |
+| Cloudflare | — | — | — | Edge inference |
+| Scaleway | — | — | — | EU-hosted |
+| Eigen AI | — | — | — | Emerging |
+
+Source: [Artificial Analysis gpt-oss-120b provider benchmarks](https://artificialanalysis.ai/models/gpt-oss-120b/providers) (median P50, trailing 72h).
+
+Use `extra_body={"provider": {"sort": "latency", "allow_fallbacks": True}}` in `ChatOpenAI` to prioritize the lowest-latency provider, or pin to a specific one with `"order": ["Cerebras"]`. See the [OpenRouter provider routing docs](https://openrouter.ai/docs/guides/routing/provider-selection) for details.
+
 ### Sign up and Set LangSmith API
 * Sign up for LangSmith [here](https://docs.langchain.com/langsmith/create-account-api-key#create-an-account-and-api-key), find out more about LangSmith and how to use it within your workflow [here](https://www.langchain.com/langsmith). 
 *  Set `LANGSMITH_API_KEY`, `LANGSMITH_TRACING_V2="true"` `LANGSMITH_PROJECT="langchain-academy"`in your environment 
