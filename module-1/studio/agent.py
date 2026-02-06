@@ -3,6 +3,7 @@ from langchain_openai import ChatOpenAI
 
 from langgraph.graph import START, StateGraph, MessagesState
 from langgraph.prebuilt import tools_condition, ToolNode
+import os
 
 def add(a: int, b: int) -> int:
     """Adds a and b.
@@ -34,7 +35,28 @@ def divide(a: int, b: int) -> float:
 tools = [add, multiply, divide]
 
 # Define LLM with bound tools
-llm = ChatOpenAI(model="gpt-4o")
+# llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1",
+    # model="openai/gpt-oss-120b:free",   # OpenAI: gpt-oss-120b (free)
+                                           # Free Users with $10+ in credits
+                                           # - 1,000 requests per day
+                                           # - 20 requests per minute
+    model="openai/gpt-oss-120b",           # OpenAI: gpt-oss-120b (paid)
+                                           # $0.039/M input, $0.19/M output
+    temperature=0,
+    default_headers={
+        "HTTP-Referer": "localhost",  # Optional. Site URL for rankings on openrouter.ai.
+        "X-Title": "langchain-academy",  # Optional. Site title for rankings on openrouter.ai.
+    },
+    extra_body={
+        "provider": {
+            "sort": "latency",           # prioritize lowest latency providers
+            "allow_fallbacks": True,     # fall back to others if unavailable
+        }
+    }
+)
 llm_with_tools = llm.bind_tools(tools)
 
 # System message
