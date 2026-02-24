@@ -37,7 +37,7 @@ tools = [add, multiply, divide]
 # Define LLM with bound tools
 # llm = ChatOpenAI(model="gpt-4o")
 llm = ChatOpenAI(
-    api_key=os.environ["OPENROUTER_API_KEY"],
+    api_key=os.environ["OPEN_ROUTER_API_KEY"],
     base_url="https://openrouter.ai/api/v1",
     # model="openai/gpt-oss-120b:free",   # OpenAI: gpt-oss-120b (free)
                                            # Free Users with $10+ in credits

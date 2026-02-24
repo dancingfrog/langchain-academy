@@ -64,7 +64,7 @@ PS> $env:API_ENV_VAR = "your-api-key-here"
 The notebooks also support [OpenRouter](https://openrouter.ai/) as an alternative provider, using the `openai/gpt-oss-120b` model via `ChatOpenAI` with a custom `base_url`. OpenRouter routes requests across multiple upstream inference providers.
 
 * Sign up at [openrouter.ai](https://openrouter.ai/) and obtain an API key.
-* Set `OPENROUTER_API_KEY` in your environment.
+* Set `OPEN_ROUTER_API_KEY` in your environment.
 * Adding $10+ in credits unlocks 1,000 free-tier requests/day (vs 50 without credits).
 
 #### Available providers for `openai/gpt-oss-120b`
